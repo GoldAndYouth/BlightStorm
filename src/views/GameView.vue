@@ -17,9 +17,9 @@ let game: Phaser.Game | null = null
 let subscription: any = null
 
 class GameScene extends Phaser.Scene {
-  private player!: Phaser.Physics.Arcade.Sprite
+  private player!: Phaser.GameObjects.Sprite
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  private otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite> = new Map()
+  private otherPlayers: Map<string, Phaser.GameObjects.Sprite> = new Map()
 
   constructor() {
     super({ key: 'GameScene' })
@@ -35,7 +35,9 @@ class GameScene extends Phaser.Scene {
     this.player = this.add.sprite(400, 300, 'player')
     
     // Setup input
-    this.cursors = this.input.keyboard.createCursorKeys()
+    if (this.input.keyboard) {
+      this.cursors = this.input.keyboard.createCursorKeys()
+    }
     
     // Setup camera to follow player
     this.cameras.main.startFollow(this.player)
@@ -58,7 +60,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Update other players positions
-    this.otherPlayers.forEach((sprite, id) => {
+    this.otherPlayers.forEach((sprite) => {
       // Update positions based on received data
     })
   }
