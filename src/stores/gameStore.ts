@@ -6,9 +6,14 @@ export const useGameStore = defineStore('game', () => {
   const players = ref<any[]>([])
   const gameState = ref<'lobby' | 'playing' | 'ended'>('lobby')
   const currentPlayer = ref<any>(null)
+  const gameMode = ref<'single' | 'multi'>('multi')
 
   function setRoomId(id: string) {
     roomId.value = id
+  }
+
+  function setGameMode(mode: 'single' | 'multi') {
+    gameMode.value = mode
   }
 
   function addPlayer(player: any) {
@@ -32,7 +37,9 @@ export const useGameStore = defineStore('game', () => {
     players,
     gameState,
     currentPlayer,
+    gameMode,
     setRoomId,
+    setGameMode,
     addPlayer,
     removePlayer,
     setCurrentPlayer,

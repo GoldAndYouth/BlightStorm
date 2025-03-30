@@ -5,6 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS public.game_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     status TEXT NOT NULL DEFAULT 'lobby',
+    mode TEXT NOT NULL DEFAULT 'multi',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

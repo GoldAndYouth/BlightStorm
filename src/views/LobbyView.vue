@@ -3,14 +3,17 @@
     <h1>BlightStorm</h1>
     <div class="lobby-actions">
       <div v-if="!roomId">
-        <button @click="createNewRoom">Create New Room</button>
+        <div class="mode-selection">
+          <button @click="createNewRoom('single')">Single Player</button>
+          <button @click="createNewRoom('multi')">Multiplayer</button>
+        </div>
       </div>
       <div v-else>
         <h2>Room Code: {{ roomId }}</h2>
-        <p>Share this code with other players to join!</p>
-        <button @click="startGame" :disabled="players.length < 2">Start Game</button>
+        <p v-if="gameMode === 'multi'">Share this code with other players to join!</p>
+        <button @click="startGame" :disabled="gameMode === 'multi' && players.length < 2">Start Game</button>
       </div>
-      <div class="join-room">
+      <div class="join-room" v-if="gameMode === 'multi'">
         <input 
           v-model="joinCode" 
           placeholder="Enter room code" 
@@ -44,6 +47,7 @@ const gameStore = useGameStore()
 const joinCode = ref('')
 const subscription = ref<any>(null)
 const error = ref('')
+const gameMode = ref<'single' | 'multi'>('multi')
 
 const { roomId, players, setRoomId } = gameStore
 
@@ -53,10 +57,11 @@ const isValidRoomCode = computed(() => {
   return uuidRegex.test(joinCode.value)
 })
 
-async function createNewRoom() {
+async function createNewRoom(mode: 'single' | 'multi') {
   try {
     error.value = ''
-    const room = await createGameRoom()
+    gameMode.value = mode
+    const room = await createGameRoom(mode)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
   } catch (error) {
@@ -72,6 +77,7 @@ async function joinRoom() {
       error.value = 'Please enter a valid room code'
       return
     }
+    gameMode.value = 'multi'
     const room = await joinGameRoom(joinCode.value)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
@@ -163,5 +169,16 @@ li {
   background-color: #ffebee;
   border-radius: 4px;
   display: inline-block;
+}
+
+.mode-selection {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.mode-selection button {
+  min-width: 150px;
 }
 </style> 
