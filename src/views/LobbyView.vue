@@ -27,10 +27,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/gameStore'
-import { createGameRoom, joinGameRoom, subscribeToGameRoom } from '../services/supabase'
+import { createGameRoom, joinGameRoom, subscribeToGameRoom, testSupabaseConnection } from '../services/supabase'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -71,6 +71,13 @@ function startGame() {
     router.push(`/game/${roomId}`)
   }
 }
+
+onMounted(async () => {
+  const isConnected = await testSupabaseConnection()
+  if (!isConnected) {
+    console.error('Failed to connect to Supabase. Please check your environment variables.')
+  }
+})
 
 onUnmounted(() => {
   if (subscription.value) {
