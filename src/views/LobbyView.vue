@@ -59,14 +59,16 @@ const isValidRoomCode = computed(() => {
 
 async function createNewRoom(mode: 'single' | 'multi') {
   try {
+    console.log('Creating new room in mode:', mode)
     error.value = ''
     gameMode.value = mode
     const room = await createGameRoom(mode)
+    console.log('Room created:', room)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error creating room:', err)
-    error.value = 'Failed to create room. Please try again.'
+    error.value = err.message || 'Failed to create room. Please try again.'
   }
 }
 
@@ -81,14 +83,16 @@ async function joinRoom() {
     const room = await joinGameRoom(joinCode.value)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error joining room:', err)
-    error.value = 'Failed to join room. Please check the room code and try again.'
+    error.value = err.message || 'Failed to join room. Please check the room code and try again.'
   }
 }
 
 function setupRoomSubscription(roomId: string) {
+  console.log('Setting up room subscription for:', roomId)
   subscription.value = subscribeToGameRoom(roomId, (payload) => {
+    console.log('Received room update:', payload)
     const { players } = payload
     gameStore.players = players
   })
@@ -96,6 +100,7 @@ function setupRoomSubscription(roomId: string) {
 
 function startGame() {
   if (roomId) {
+    console.log('Starting game with roomId:', roomId)
     router.push(`/game/${roomId}`)
   }
 }

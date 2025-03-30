@@ -23,12 +23,17 @@ export async function testSupabaseConnection() {
 }
 
 export async function createGameRoom(mode: 'single' | 'multi') {
+  console.log('Creating game room with mode:', mode)
   const { data, error } = await supabase
     .from('game_rooms')
     .insert([{ status: 'lobby', mode }])
     .select()
   
-  if (error) throw error
+  if (error) {
+    console.error('Supabase error creating room:', error)
+    throw error
+  }
+  console.log('Room created successfully:', data)
   return data[0]
 }
 
