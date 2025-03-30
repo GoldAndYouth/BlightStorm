@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/gameStore'
 import { createGameRoom, joinGameRoom, subscribeToGameRoom } from '../services/supabase'
@@ -37,7 +37,7 @@ const gameStore = useGameStore()
 const joinCode = ref('')
 const subscription = ref<any>(null)
 
-const { roomId, players, setRoomId, addPlayer, removePlayer } = gameStore
+const { roomId, players, setRoomId } = gameStore
 
 async function createNewRoom() {
   try {
@@ -67,8 +67,8 @@ function setupRoomSubscription(roomId: string) {
 }
 
 function startGame() {
-  if (roomId.value) {
-    router.push(`/game/${roomId.value}`)
+  if (roomId) {
+    router.push(`/game/${roomId}`)
   }
 }
 
