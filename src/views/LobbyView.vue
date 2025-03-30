@@ -46,7 +46,7 @@ const router = useRouter()
 const gameStore = useGameStore()
 const joinCode = ref('')
 const subscription = ref<any>(null)
-const error = ref('')
+const error = ref<string>('')
 const gameMode = ref<'single' | 'multi'>('multi')
 
 const { roomId, players, setRoomId } = gameStore
@@ -64,8 +64,8 @@ async function createNewRoom(mode: 'single' | 'multi') {
     const room = await createGameRoom(mode)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
-  } catch (error) {
-    console.error('Error creating room:', error)
+  } catch (err) {
+    console.error('Error creating room:', err)
     error.value = 'Failed to create room. Please try again.'
   }
 }
@@ -81,8 +81,8 @@ async function joinRoom() {
     const room = await joinGameRoom(joinCode.value)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
-  } catch (error) {
-    console.error('Error joining room:', error)
+  } catch (err) {
+    console.error('Error joining room:', err)
     error.value = 'Failed to join room. Please check the room code and try again.'
   }
 }
