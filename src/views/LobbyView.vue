@@ -46,7 +46,7 @@
 import { ref, onUnmounted, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/gameStore'
-import { createGameRoom, joinGameRoom, subscribeToGameRoom, testSupabaseConnection } from '../services/supabase'
+import { createGameRoom, joinGameRoom, subscribeToGameRoom, testSupabaseConnection, createPlayer } from '../services/supabase'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -72,6 +72,15 @@ async function createNewRoom(mode: 'single' | 'multi') {
     const room = await createGameRoom(mode)
     console.log('Room created successfully:', room)
     setRoomId(room.id)
+    
+    // For single-player mode, automatically add a player
+    if (mode === 'single') {
+      console.log('Adding player for single-player mode')
+      const player = await createPlayer(room.id, 'Player 1')
+      console.log('Player added:', player)
+      gameStore.addPlayer(player)
+    }
+    
     setupRoomSubscription(room.id)
   } catch (err: any) {
     console.error('Error in createNewRoom:', err)
