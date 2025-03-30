@@ -10,9 +10,6 @@ CREATE TABLE IF NOT EXISTS public.game_rooms (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Add mode column to game_rooms table
-ALTER TABLE public.game_rooms ADD COLUMN IF NOT EXISTS mode TEXT NOT NULL DEFAULT 'multi';
-
 -- Create players table
 CREATE TABLE IF NOT EXISTS public.players (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

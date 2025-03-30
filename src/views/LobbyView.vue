@@ -4,8 +4,14 @@
     <div class="lobby-actions">
       <div v-if="!roomId">
         <div class="mode-selection">
-          <button @click="createNewRoom('single')">Single Player</button>
-          <button @click="createNewRoom('multi')">Multiplayer</button>
+          <button @click="() => {
+            console.log('Single player button clicked');
+            createNewRoom('single');
+          }">Single Player</button>
+          <button @click="() => {
+            console.log('Multiplayer button clicked');
+            createNewRoom('multi');
+          }">Multiplayer</button>
         </div>
       </div>
       <div v-else>
@@ -59,15 +65,16 @@ const isValidRoomCode = computed(() => {
 
 async function createNewRoom(mode: 'single' | 'multi') {
   try {
-    console.log('Creating new room in mode:', mode)
+    console.log('createNewRoom function called with mode:', mode)
     error.value = ''
     gameMode.value = mode
+    console.log('About to call createGameRoom with mode:', mode)
     const room = await createGameRoom(mode)
-    console.log('Room created:', room)
+    console.log('Room created successfully:', room)
     setRoomId(room.id)
     setupRoomSubscription(room.id)
   } catch (err: any) {
-    console.error('Error creating room:', err)
+    console.error('Error in createNewRoom:', err)
     error.value = err.message || 'Failed to create room. Please try again.'
   }
 }

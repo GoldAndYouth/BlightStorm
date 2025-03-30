@@ -3,17 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+console.log('Initializing Supabase client with URL:', supabaseUrl)
+
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables')
+  throw new Error('Missing Supabase environment variables')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+console.log('Supabase client created successfully')
 
 // Test function to verify connection
 export async function testSupabaseConnection() {
   try {
+    console.log('Testing Supabase connection...')
     const { data, error } = await supabase.from('game_rooms').select('count').limit(1)
-    if (error) throw error
+    if (error) {
+      console.error('Supabase connection test failed:', error)
+      throw error
+    }
     console.log('Supabase connection successful:', data)
     return true
   } catch (error) {
@@ -24,17 +32,22 @@ export async function testSupabaseConnection() {
 
 export async function createGameRoom(mode: 'single' | 'multi') {
   console.log('Creating game room with mode:', mode)
-  const { data, error } = await supabase
-    .from('game_rooms')
-    .insert([{ status: 'lobby', mode }])
-    .select()
-  
-  if (error) {
-    console.error('Supabase error creating room:', error)
+  try {
+    const { data, error } = await supabase
+      .from('game_rooms')
+      .insert([{ status: 'lobby', mode }])
+      .select()
+    
+    if (error) {
+      console.error('Supabase error creating room:', error)
+      throw error
+    }
+    console.log('Room created successfully:', data)
+    return data[0]
+  } catch (error) {
+    console.error('Error in createGameRoom:', error)
     throw error
   }
-  console.log('Room created successfully:', data)
-  return data[0]
 }
 
 export async function joinGameRoom(roomId: string) {
