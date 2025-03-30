@@ -43,6 +43,37 @@ export async function joinGameRoom(roomId: string) {
   return data
 }
 
+export async function createPlayer(roomId: string, name: string) {
+  const { data, error } = await supabase
+    .from('players')
+    .insert([{ room_id: roomId, name }])
+    .select()
+  
+  if (error) throw error
+  return data[0]
+}
+
+export async function updatePlayerPosition(playerId: string, x: number, y: number) {
+  const { data, error } = await supabase
+    .from('players')
+    .update({ position_x: x, position_y: y })
+    .eq('id', playerId)
+    .select()
+  
+  if (error) throw error
+  return data[0]
+}
+
+export async function getRoomPlayers(roomId: string) {
+  const { data, error } = await supabase
+    .from('players')
+    .select('*')
+    .eq('room_id', roomId)
+  
+  if (error) throw error
+  return data
+}
+
 export function subscribeToGameRoom(roomId: string, callback: (payload: any) => void) {
   return supabase
     .channel(`room:${roomId}`)
