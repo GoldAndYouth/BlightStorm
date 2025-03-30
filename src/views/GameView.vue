@@ -60,7 +60,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Update other players positions
-    this.otherPlayers.forEach((sprite) => {
+    this.otherPlayers.forEach(() => {
       // Update positions based on received data
     })
   }
@@ -88,7 +88,7 @@ onMounted(() => {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 0 },
+        gravity: { x: 0, y: 0 },
         debug: false
       }
     },

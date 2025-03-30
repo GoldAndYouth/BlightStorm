@@ -67,7 +67,9 @@ function setupRoomSubscription(roomId: string) {
 }
 
 function startGame() {
-  router.push(`/game/${roomId.value}`)
+  if (roomId.value) {
+    router.push(`/game/${roomId.value}`)
+  }
 }
 
 onUnmounted(() => {
